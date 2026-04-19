@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توظيف السعودية | التخصصات</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .job-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid #e0e0e0;
+        }
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-color: #1a4a6e;
+        }
+        .job-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .job-card h3 { color: #1a4a6e; margin-bottom: 0.5rem; }
+        .job-card p { color: #666; font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.5; }
+        .job-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee; }
+        .job-count { background: #e0e7ff; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; color: #1a4a6e; }
+        .job-salary { color: #00b894; font-weight: bold; }
+        .hero { background: linear-gradient(135deg, #1a4a6e, #0a2b3d); padding: 2rem 5%; text-align: center; color: white; }
+        .hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar"></nav>
+
+    <section class="hero">
+        <h1>جميع التخصصات</h1>
+        <p>اختر تخصصك وتقدم للوظائف المتاحة</p>
+    </section>
+
+    <div class="container">
+        <div class="jobs-grid" id="jobsGrid"></div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section"><h3>توظيف السعودية</h3><p>أكبر منصة توظيف إلكترونية في المملكة</p></div>
+            <div class="footer-section"><h3>روابط سريعة</h3><ul><li><a href="index.html">الرئيسية</a></li><li><a href="jobs.html">التخصصات</a></li></ul></div>
+            <div class="footer-section"><h3>التواصل</h3><ul><li>هاتف: 9200-12345</li><li>بريد: info@saudijobs.sa</li></ul></div>
+        </div>
+        <div class="footer-bottom">2024 توظيف السعودية - جميع الحقوق محفوظة</div>
+    </footer>
+
+    <script src="get-data.js"></script>
+    <script>
+        const userId = localStorage.getItem('currentUserId');
+        const userEmail = localStorage.getItem('currentUserEmail');
+        
+        if (!userId) {
+            window.location.href = 'login.html';
+        }
+        
+        function updateNavbar() {
+            const navbar = document.getElementById('navbar');
+            navbar.innerHTML = `
+                <div class="logo">
+                    <span class="logo-icon">🇸🇦</span>
+                    <div><h1>توظيف السعودية</h1><p>Saudi Jobs</p></div>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">الرئيسية</a>
+                    <a href="jobs.html" class="active">التخصصات</a>
+                    <a href="my-applications.html">طلباتي</a>
+                    <div class="user-menu">
+                        <div class="user-avatar">${userEmail ? userEmail.charAt(0).toUpperCase() : 'U'}</div>
+                        <span class="user-name">${userEmail ? userEmail.split('@')[0] : 'مستخدم'}</span>
+                        <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function loadJobs() {
+            const jobs = SaudiJobsDB.getAllJobs();
+            const grid = document.getElementById('jobsGrid');
+            grid.innerHTML = jobs.map(job => `
+                <div class="job-card" onclick="selectJob(${job.id}, '${job.name}')">
+                    <div class="job-icon">${job.icon}</div>
+                    <h3>${job.name}</h3>
+                    <p>${job.description}</p>
+                    <div class="job-meta">
+                        <span class="job-count">${job.count} وظيفة</span>
+                        <span class="job-salary">${job.salary} ريال</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function selectJob(jobId, jobName) {
+            localStorage.setItem('selectedJobId', jobId);
+            localStorage.setItem('selectedJobName', jobName);
+            window.location.href = 'application.html';
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+        
+        updateNavbar();
+        loadJobs();
+    </script>
+</body>
+</html>

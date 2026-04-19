@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توظيف السعودية | طلباتي</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .data-table th {
+            background: #1a4a6e;
+            color: white;
+            padding: 1rem;
+            text-align: right;
+        }
+        .data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .status-paid {
+            background: #00b894;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+        .status-pending {
+            background: #ffd32a;
+            color: #1a4a6e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+        .btn-new {
+            display: inline-block;
+            background: #1a4a6e;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar"></nav>
+
+    <div class="container">
+        <h2 style="margin-bottom: 2rem; text-align:center;">طلبات التوظيف الخاصة بي</h2>
+        <div id="applicationsList" style="background:white;border-radius:20px;padding:1rem;overflow-x:auto;"></div>
+        <div style="margin-top: 2rem; text-align: center;">
+            <a href="jobs.html" class="btn-new">تقديم طلب جديد</a>
+        </div>
+    </div>
+
+    <footer class="footer"><div class="footer-bottom">2024 توظيف السعودية</div></footer>
+
+    <script src="get-data.js"></script>
+    <script>
+        const userId = localStorage.getItem('currentUserId');
+        const userEmail = localStorage.getItem('currentUserEmail');
+        
+        if (!userId) window.location.href = 'login.html';
+        
+        function updateNavbar() {
+            const navbar = document.getElementById('navbar');
+            navbar.innerHTML = `
+                <div class="logo">
+                    <span class="logo-icon">🇸🇦</span>
+                    <div><h1>توظيف السعودية</h1><p>Saudi Jobs</p></div>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">الرئيسية</a>
+                    <a href="jobs.html">التخصصات</a>
+                    <a href="my-applications.html" class="active">طلباتي</a>
+                    <div class="user-menu">
+                        <div class="user-avatar">${userEmail ? userEmail.charAt(0).toUpperCase() : 'U'}</div>
+                        <span class="user-name">${userEmail ? userEmail.split('@')[0] : 'مستخدم'}</span>
+                        <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function loadApplications() {
+            const applications = SaudiJobsDB.getUserApplications(userId);
+            const container = document.getElementById('applicationsList');
+            
+            if (applications.length === 0) {
+                container.innerHTML = `<div style="text-align:center;padding:3rem;"><p>لم تقم بتقديم أي طلب بعد</p><a href="jobs.html" style="display:inline-block;margin-top:1rem;background:#1a4a6e;color:white;padding:0.8rem 2rem;border-radius:50px;text-decoration:none;">ابدأ الآن</a></div>`;
+                return;
+            }
+            
+            container.innerHTML = `
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>التخصص</th>
+                            <th>الاسم</th>
+                            <th>المدينة</th>
+                            <th>المؤهل</th>
+                            <th>الحالة</th>
+                            <th>تاريخ التقديم</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${applications.map(app => `
+                            <tr>
+                                <td>${app.jobName}</td>
+                                <td>${app.fullName || '-'}</td>
+                                <td>${app.city || '-'}</td>
+                                <td>${app.qualification || '-'}</td>
+                                <td><span class="${app.status === 'paid' ? 'status-paid' : 'status-pending'}">${app.status === 'paid' ? 'مدفوع' : 'قيد المراجعة'}</span></td>
+                                <td>${new Date(app.appliedAt).toLocaleDateString('ar-SA')}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+        
+        updateNavbar();
+        loadApplications();
+    </script>
+</body>
+</html>

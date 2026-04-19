@@ -1,0 +1,16 @@
+{
+  "name": "saudi-jobs",
+  "version": "1.0.0",
+  "description": "منصة توظيف السعودية - تخزين البيانات في Vercel Blob",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel deploy --prod"
+  },
+  "dependencies": {
+    "@vercel/blob": "^0.22.0"
+  },
+  "keywords": ["jobs", "saudi", "employment"],
+  "author": "Saudi Jobs",
+  "license": "MIT"
+}

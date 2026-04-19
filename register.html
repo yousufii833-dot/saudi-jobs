@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توظيف السعودية | إنشاء حساب</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0a2b3d, #1a4a6e);
+            padding: 2rem;
+        }
+        .register-card {
+            background: white;
+            border-radius: 32px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .register-card h2 {
+            text-align: center;
+            color: #1a4a6e;
+            margin-bottom: 1.5rem;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #1a4a6e;
+        }
+        .btn-register {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #1a4a6e, #0a2b3d);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        .login-link a {
+            color: #1a4a6e;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .error-message {
+            background: #ff4757;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+            text-align: center;
+        }
+        .success-message {
+            background: #00b894;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+            text-align: center;
+        }
+        .password-strength {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        .strength-weak { color: #ff4757; }
+        .strength-medium { color: #ffd32a; }
+        .strength-strong { color: #00b894; }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <h2>إنشاء حساب جديد</h2>
+            <div id="errorMsg" class="error-message"></div>
+            <div id="successMsg" class="success-message"></div>
+            <form id="registerForm" novalidate>
+                <div class="input-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" id="email" placeholder="example@domain.com" required autocomplete="email">
+                </div>
+                <div class="input-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="password" placeholder="********" required minlength="6" autocomplete="new-password">
+                    <div id="passwordStrength" class="password-strength"></div>
+                </div>
+                <div class="input-group">
+                    <label>تأكيد كلمة المرور</label>
+                    <input type="password" id="confirmPassword" placeholder="********" required autocomplete="off">
+                </div>
+                <button type="submit" class="btn-register">إنشاء حساب</button>
+            </form>
+            <div class="login-link">
+                لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="get-data.js"></script>
+    <script>
+        const passwordInput = document.getElementById('password');
+        const strengthDiv = document.getElementById('passwordStrength');
+        
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            if (password.length === 0) {
+                strengthDiv.textContent = '';
+            } else if (strength <= 2) {
+                strengthDiv.innerHTML = 'كلمة مرور ضعيفة';
+                strengthDiv.className = 'password-strength strength-weak';
+            } else if (strength <= 4) {
+                strengthDiv.innerHTML = 'كلمة مرور متوسطة';
+                strengthDiv.className = 'password-strength strength-medium';
+            } else {
+                strengthDiv.innerHTML = 'كلمة مرور قوية';
+                strengthDiv.className = 'password-strength strength-strong';
+            }
+        });
+        
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirmPassword').value;
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('البريد الإلكتروني غير صحيح');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+            
+            if (password !== confirm) {
+                showError('كلمتا المرور غير متطابقتين');
+                return;
+            }
+            
+            const result = SaudiJobsDB.registerUser(email, password);
+            
+            if (result.success) {
+                localStorage.setItem('currentUserId', result.userId);
+                localStorage.setItem('currentUserEmail', result.email);
+                showSuccess('تم إنشاء الحساب بنجاح! جاري التحويل...');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } else {
+                showError(result.message);
+            }
+        });
+        
+        function showError(msg) {
+            const div = document.getElementById('errorMsg');
+            div.textContent = msg;
+            div.style.display = 'block';
+            setTimeout(() => div.style.display = 'none', 3000);
+        }
+        
+        function showSuccess(msg) {
+            const div = document.getElementById('successMsg');
+            div.textContent = msg;
+            div.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تم التقديم بنجاح</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .success-container {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .success-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 32px;
+            max-width: 500px;
+            margin: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .checkmark {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+        .btn-home {
+            background: linear-gradient(135deg, #1a4a6e, #0a2b3d);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+        .btn-home:hover {
+            transform: translateY(-2px);
+        }
+        .btn-applications {
+            background: #00b894;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-card">
+            <div class="checkmark">✔️</div>
+            <h2>تم تقديم طلبك بنجاح</h2>
+            <p>شكراً لتقديمك على وظيفة في منصة توظيف السعودية.<br>سيتم التواصل معك خلال 3 أيام عمل على بريدك الإلكتروني.</p>
+            <button class="btn-home" onclick="goHome()">العودة للرئيسية</button>
+            <button class="btn-applications" onclick="goApplications()">طلباتي</button>
+        </div>
+    </div>
+    <script>
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+        function goApplications() {
+            window.location.href = 'my-applications.html';
+        }
+    </script>
+</body>
+</html>

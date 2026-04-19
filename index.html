@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توظيف السعودية | المنصة الرائدة في التوظيف</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            direction: rtl;
+            line-height: 1.6;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #0a2b3d, #1a4a6e);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { font-size: 2rem; }
+        .logo h1 { color: white; font-size: 1.5rem; }
+        .logo p { color: #ffd32a; font-size: 0.8rem; }
+        .nav-links { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+        .nav-links a { color: white; text-decoration: none; font-weight: 500; padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.3s; }
+        .nav-links a:hover, .nav-links a.active { background: rgba(255,255,255,0.15); }
+        .auth-buttons { display: flex; gap: 0.5rem; }
+        .btn-login { background: rgba(255,255,255,0.2); color: white; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; }
+        .btn-register-nav { background: #ffd32a; color: #1a4a6e; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; font-weight: bold; }
+        .user-menu { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 30px; }
+        .user-avatar { width: 35px; height: 35px; background: #ffd32a; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1a4a6e; font-weight: bold; }
+        .user-name { color: white; }
+        .logout-btn { background: #ff4757; border: none; padding: 0.5rem 1rem; border-radius: 8px; color: white; cursor: pointer; font-weight: 500; }
+        .hero-section {
+            background: linear-gradient(135deg, #0a2b3d 0%, #1a4a6e 50%, #0a2b3d 100%);
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem 5%;
+        }
+        .hero-content { max-width: 600px; }
+        .hero-content h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; background: linear-gradient(135deg, #fff, #ffd32a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-content p { font-size: 1.2rem; color: rgba(255,255,255,0.9); margin-bottom: 2rem; line-height: 1.8; }
+        .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .btn-primary { background: #ffd32a; color: #1a4a6e; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: bold; }
+        .btn-outline { border: 2px solid #ffd32a; color: #ffd32a; padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: bold; }
+        .btn-outline:hover { background: #ffd32a; color: #1a4a6e; }
+        .partners-section { background: white; padding: 3rem 5%; text-align: center; border-bottom: 1px solid #eee; }
+        .partners-section h3 { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+        .partners-grid { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; }
+        .partner-logo { font-size: 1.2rem; color: #999; transition: all 0.3s; }
+        .partner-logo:hover { color: #1a4a6e; }
+        .features-section { padding: 5rem 5%; background: #f8fafc; }
+        .section-title { text-align: center; margin-bottom: 3rem; }
+        .section-title h2 { font-size: 2.5rem; color: #1a4a6e; margin-bottom: 1rem; }
+        .section-title p { color: #666; max-width: 600px; margin: 0 auto; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; }
+        .feature-card { background: white; padding: 2rem; border-radius: 20px; text-align: center; transition: all 0.3s; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; }
+        .feature-card:hover { transform: translateY(-10px); border-color: #1a4a6e; }
+        .feature-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #1a4a6e, #0a2b3d); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2rem; color: #ffd32a; }
+        .stats-section { background: linear-gradient(135deg, #1a4a6e, #0a2b3d); padding: 4rem 5%; color: white; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto; text-align: center; }
+        .stat-number { font-size: 3rem; font-weight: bold; color: #ffd32a; }
+        .footer { background: #0a2b3d; color: white; padding: 3rem 5% 1rem; margin-top: 3rem; }
+        .footer-content { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .footer-section h3 { margin-bottom: 1rem; color: #ffd32a; }
+        .footer-section p, .footer-section ul li { opacity: 0.8; }
+        .footer-section ul { list-style: none; }
+        .footer-section ul li a { color: white; text-decoration: none; }
+        .footer-bottom { text-align: center; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem; opacity: 0.6; }
+        @media (max-width: 768px) {
+            .hero-section { flex-direction: column; text-align: center; }
+            .hero-content h1 { font-size: 2rem; }
+            .hero-buttons { justify-content: center; }
+            .navbar { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar"></nav>
+
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>وظيفة أحلامك تبدأ من هنا</h1>
+            <p>أكبر منصة توظيف إلكترونية في المملكة العربية السعودية. نربط الباحثين عن عمل بأفضل الفرص الوظيفية في أكبر الشركات.</p>
+            <div class="hero-buttons">
+                <a href="register.html" class="btn-primary">تسجيل جديد</a>
+                <a href="jobs.html" class="btn-outline">استعراض الوظائف</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="hero-illustration">
+                <span style="font-size: 5rem; color: rgba(255,255,255,0.2); margin: 0 1rem;">💼</span>
+                <span style="font-size: 5rem; color: rgba(255,255,255,0.2); margin: 0 1rem;">👥</span>
+                <span style="font-size: 5rem; color: rgba(255,255,255,0.2); margin: 0 1rem;">📈</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="partners-section">
+        <h3>شركاء النجاح</h3>
+        <div class="partners-grid">
+            <span class="partner-logo">Microsoft</span>
+            <span class="partner-logo">Apple</span>
+            <span class="partner-logo">Amazon</span>
+            <span class="partner-logo">Google</span>
+            <span class="partner-logo">أرامكو</span>
+            <span class="partner-logo">STC</span>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="section-title">
+            <h2>لماذا تختار توظيف السعودية؟</h2>
+            <p>نقدم لك أفضل الخدمات لنسهل عليك رحلة البحث عن وظيفة أحلامك</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card"><div class="feature-icon">💼</div><h3>أكثر من 1000 وظيفة</h3><p>وظائف محدثة يومياً في جميع التخصصات</p></div>
+            <div class="feature-card"><div class="feature-icon">🏢</div><h3>أفضل الشركات</h3><p>نعمل مع أكبر الشركات في المملكة</p></div>
+            <div class="feature-card"><div class="feature-icon">📊</div><h3>تتبع طلباتك</h3><p>لوحة تحكم متكاملة لمتابعة حالة طلباتك</p></div>
+            <div class="feature-card"><div class="feature-icon">🔒</div><h3>دفع آمن</h3><p>بوابة دفع آمنة لحماية بياناتك المالية</p></div>
+            <div class="feature-card"><div class="feature-icon">🎧</div><h3>دعم على مدار الساعة</h3><p>فريق دعم متخصص للإجابة على استفساراتك</p></div>
+            <div class="feature-card"><div class="feature-icon">📱</div><h3>متوافق مع الجوال</h3><p>تصفح المنصة بسهولة من أي جهاز</p></div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-item"><div class="stat-number" id="statJobs">0</div><div class="stat-label">وظيفة شاغرة</div></div>
+            <div class="stat-item"><div class="stat-number" id="statCompanies">0</div><div class="stat-label">شركة متعاقدة</div></div>
+            <div class="stat-item"><div class="stat-number" id="statUsers">0</div><div class="stat-label">باحث عن عمل</div></div>
+            <div class="stat-item"><div class="stat-number" id="statHired">0</div><div class="stat-label">تم توظيفهم</div></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section"><h3>توظيف السعودية</h3><p>أكبر منصة توظيف إلكترونية في المملكة</p></div>
+            <div class="footer-section"><h3>روابط سريعة</h3><ul><li><a href="index.html">الرئيسية</a></li><li><a href="jobs.html">التخصصات</a></li><li><a href="register.html">إنشاء حساب</a></li></ul></div>
+            <div class="footer-section"><h3>التواصل</h3><ul><li>هاتف: 9200-12345</li><li>بريد: info@saudijobs.sa</li></ul></div>
+        </div>
+        <div class="footer-bottom">2024 توظيف السعودية - جميع الحقوق محفوظة</div>
+    </footer>
+
+    <script src="get-data.js"></script>
+    <script>
+        function updateNavbar() {
+            const userId = localStorage.getItem('currentUserId');
+            const userEmail = localStorage.getItem('currentUserEmail');
+            const navbar = document.getElementById('navbar');
+            
+            if (userId && userEmail) {
+                navbar.innerHTML = `
+                    <div class="logo">
+                        <span class="logo-icon">🇸🇦</span>
+                        <div><h1>توظيف السعودية</h1><p>Saudi Jobs</p></div>
+                    </div>
+                    <div class="nav-links">
+                        <a href="index.html" class="active">الرئيسية</a>
+                        <a href="jobs.html">التخصصات</a>
+                        <a href="my-applications.html">طلباتي</a>
+                        <div class="user-menu">
+                            <div class="user-avatar">${userEmail.charAt(0).toUpperCase()}</div>
+                            <span class="user-name">${userEmail.split('@')[0]}</span>
+                            <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                navbar.innerHTML = `
+                    <div class="logo">
+                        <span class="logo-icon">🇸🇦</span>
+                        <div><h1>توظيف السعودية</h1><p>Saudi Jobs</p></div>
+                    </div>
+                    <div class="nav-links">
+                        <a href="index.html" class="active">الرئيسية</a>
+                        <div class="auth-buttons">
+                            <a href="login.html" class="btn-login">تسجيل دخول</a>
+                            <a href="register.html" class="btn-register-nav">إنشاء حساب</a>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function logout() {
+            localStorage.clear();
+            updateNavbar();
+            window.location.href = 'index.html';
+        }
+        
+        function loadStats() {
+            if (typeof SaudiJobsDB !== 'undefined') {
+                const stats = SaudiJobsDB.getStats();
+                document.getElementById('statJobs').innerText = stats.totalJobOpenings || 1250;
+                document.getElementById('statCompanies').innerText = 248;
+                document.getElementById('statUsers').innerText = stats.totalUsers || 15230;
+                document.getElementById('statHired').innerText = 8750;
+            } else {
+                document.getElementById('statJobs').innerText = '1250';
+                document.getElementById('statCompanies').innerText = '248';
+                document.getElementById('statUsers').innerText = '15230';
+                document.getElementById('statHired').innerText = '8750';
+            }
+        }
+        
+        updateNavbar();
+        loadStats();
+    </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - المدير</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar" id="navbar"></nav>
+    
+    <div class="container">
+        <h2 style="margin-bottom: 2rem;">لوحة تحكم المدير</h2>
+        
+        <div id="adminCheck" style="margin-bottom: 1rem;"></div>
+        
+        <div class="dashboard-stats" id="stats"></div>
+        
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+            <button onclick="SaudiJobsDB.exportToJSON()" style="background:#1a4a6e;color:white;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;">تصدير JSON</button>
+            <button onclick="SaudiJobsDB.exportToCSV()" style="background:#00b894;color:white;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;">تصدير CSV</button>
+            <button onclick="location.reload()" style="background:#ffd32a;color:#1a4a6e;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;">تحديث</button>
+        </div>
+        
+        <div id="allDataContainer"></div>
+    </div>
+
+    <footer class="footer"><div class="footer-bottom">2024 توظيف السعودية</div></footer>
+
+    <script src="get-data.js"></script>
+    <script>
+        const userId = localStorage.getItem('currentUserId');
+        const userEmail = localStorage.getItem('currentUserEmail');
+        const ADMIN_EMAILS = ['admin@saudijobs.sa'];
+        const isAdmin = ADMIN_EMAILS.includes(userEmail);
+        
+        if (!userId) window.location.href = 'login.html';
+        
+        function updateNavbar() {
+            const navbar = document.getElementById('navbar');
+            navbar.innerHTML = `
+                <div class="logo">
+                    <span class="logo-icon">🇸🇦</span>
+                    <div><h1>توظيف السعودية</h1><p>Saudi Jobs</p></div>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">الرئيسية</a>
+                    <a href="jobs.html">التخصصات</a>
+                    <a href="my-applications.html">طلباتي</a>
+                    <a href="dashboard.html" class="active">لوحة التحكم</a>
+                    <div class="user-menu">
+                        <div class="user-avatar">${userEmail ? userEmail.charAt(0).toUpperCase() : 'U'}</div>
+                        <span class="user-name">${userEmail ? userEmail.split('@')[0] : 'مستخدم'}</span>
+                        <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (!isAdmin) {
+            document.getElementById('adminCheck').innerHTML = `<div style="background:#ff4757;color:white;padding:1rem;border-radius:12px;text-align:center;">عذراً، هذه الصفحة مخصصة للمدير فقط.</div>`;
+            document.getElementById('stats').style.display = 'none';
+        } else {
+            document.getElementById('adminCheck').innerHTML = `<div style="background:#00b894;color:white;padding:1rem;border-radius:12px;text-align:center;">مرحباً أيها المدير | البريد: ${userEmail}</div>`;
+            const stats = SaudiJobsDB.getStats();
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-box"><div class="stat-icon">💼</div><div class="stat-value">${stats.totalJobs}</div><div class="stat-title">تخصص</div></div>
+                <div class="stat-box"><div class="stat-icon">📝</div><div class="stat-value">${stats.totalApplications}</div><div class="stat-title">طلب تقديم</div></div>
+                <div class="stat-box"><div class="stat-icon">👥</div><div class="stat-value">${stats.totalUsers}</div><div class="stat-title">مستخدم</div></div>
+                <div class="stat-box"><div class="stat-icon">💰</div><div class="stat-value">${stats.totalRevenue}</div><div class="stat-title">ريال إيرادات</div></div>
+            `;
+            SaudiJobsDB.showAllDataInDashboard('allDataContainer', userId);
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+        
+        updateNavbar();
+    </script>
+</body>
+</html>

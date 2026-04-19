@@ -1,0 +1,232 @@
+
+     <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توظيف السعودية | بيانات المتقدم</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .form-card {
+            background: white;
+            border-radius: 28px;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 2rem auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .form-title { text-align: center; margin-bottom: 2rem; }
+        .form-title h2 { color: #1a4a6e; font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .form-row { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .input-group { flex: 1; margin-bottom: 1rem; }
+        .input-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333; }
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #1a4a6e;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #1a4a6e, #0a2b3d);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        .btn-submit:hover { transform: translateY(-2px); }
+        .error-message { background: #ff4757; color: white; padding: 0.8rem; border-radius: 12px; margin-bottom: 1rem; display: none; text-align: center; }
+        .field-hint { font-size: 0.7rem; color: #888; margin-top: 0.25rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar"></nav>
+
+    <div class="container">
+        <div class="form-card">
+            <div class="form-title">
+                <h2>بيانات المتقدم للوظيفة</h2>
+                <p id="jobDisplay"></p>
+            </div>
+            <div id="errorMsg" class="error-message"></div>
+            <form id="appForm" novalidate>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>الاسم الكامل</label>
+                        <input type="text" id="fullName" required placeholder="أحمد محمد العلي">
+                        <div class="field-hint">حروف عربية فقط</div>
+                    </div>
+                    <div class="input-group">
+                        <label>رقم الهوية الوطنية</label>
+                        <input type="text" id="nationalId" maxlength="10" required placeholder="1234567890" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        <div class="field-hint">10 أرقام فقط</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>رقم الجوال</label>
+                        <input type="tel" id="phone" required placeholder="05xxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
+                        <div class="field-hint">يبدأ بـ 05 - 10 أرقام</div>
+                    </div>
+                    <div class="input-group">
+                        <label>المدينة</label>
+                        <select id="city">
+                            <option value="الرياض">الرياض</option>
+                            <option value="جدة">جدة</option>
+                            <option value="مكة">مكة المكرمة</option>
+                            <option value="المدينة">المدينة المنورة</option>
+                            <option value="الدمام">الدمام</option>
+                            <option value="الخبر">الخبر</option>
+                            <option value="أبها">أبها</option>
+                            <option value="تبوك">تبوك</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label>المؤهل العلمي</label>
+                        <select id="qualification">
+                            <option value="ثانوية">ثانوية عامة</option>
+                            <option value="دبلوم">دبلوم</option>
+                            <option value="بكالوريوس">بكالوريوس</option>
+                            <option value="ماجستير">ماجستير</option>
+                            <option value="دكتوراه">دكتوراه</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>سنوات الخبرة</label>
+                        <select id="experience">
+                            <option value="لا توجد">لا توجد خبرة</option>
+                            <option value="أقل من سنة">أقل من سنة</option>
+                            <option value="1-3">1-3 سنوات</option>
+                            <option value="3-5">3-5 سنوات</option>
+                            <option value="5-10">5-10 سنوات</option>
+                            <option value="10+">أكثر من 10 سنوات</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>المهارات</label>
+                    <textarea id="skills" rows="3" placeholder="مثال: القيادة، التواصل، إدارة المشاريع، Excel، PowerPoint"></textarea>
+                    <div class="field-hint">اكتب المهارات مفصولة بفواصل</div>
+                </div>
+                <button type="submit" class="btn-submit">إرسال الطلب والانتقال للدفع</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer"><div class="footer-bottom">2024 توظيف السعودية</div></footer>
+
+    <script src="get-data.js"></script>
+    <script>
+        const userId = localStorage.getItem('currentUserId');
+        const userEmail = localStorage.getItem('currentUserEmail');
+        const jobName = localStorage.getItem('selectedJobName');
+        const jobId = localStorage.getItem('selectedJobId');
+        
+        if (!userId) window.location.href = 'login.html';
+        if (!jobName) window.location.href = 'jobs.html';
+        
+        function updateNavbar() {
+            const navbar = document.getElementById('navbar');
+            navbar.innerHTML = `
+                <div class="logo">
+                    <span class="logo-icon">🇸🇦</span>
+                    <div><h1>توظيف السعودية</h1><p>Saudi Jobs</p></div>
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">الرئيسية</a>
+                    <a href="jobs.html">التخصصات</a>
+                    <a href="my-applications.html">طلباتي</a>
+                    <div class="user-menu">
+                        <div class="user-avatar">${userEmail ? userEmail.charAt(0).toUpperCase() : 'U'}</div>
+                        <span class="user-name">${userEmail ? userEmail.split('@')[0] : 'مستخدم'}</span>
+                        <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        document.getElementById('jobDisplay').innerHTML = `<strong>التخصص المختار: ${jobName}</strong>`;
+        
+        document.getElementById('appForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullName = document.getElementById('fullName').value.trim();
+            const nationalId = document.getElementById('nationalId').value;
+            const phone = document.getElementById('phone').value;
+            
+            if (!fullName) {
+                showError('يرجى إدخال الاسم الكامل');
+                return;
+            }
+            if (nationalId.length !== 10) {
+                showError('رقم الهوية يجب أن يكون 10 أرقام');
+                return;
+            }
+            if (!phone.startsWith('05') || phone.length !== 10) {
+                showError('رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام');
+                return;
+            }
+            
+            SaudiJobsDB.updateUser(userId, {
+                fullName: fullName,
+                nationalId: nationalId,
+                phone: phone,
+                city: document.getElementById('city').value,
+                qualification: document.getElementById('qualification').value,
+                experience: document.getElementById('experience').value,
+                skills: document.getElementById('skills').value
+            });
+            
+            const applicationData = {
+                userId: parseInt(userId),
+                jobId: parseInt(jobId),
+                jobName: jobName,
+                fullName: fullName,
+                nationalId: nationalId,
+                phone: phone,
+                city: document.getElementById('city').value,
+                qualification: document.getElementById('qualification').value,
+                experience: document.getElementById('experience').value,
+                skills: document.getElementById('skills').value
+            };
+            
+            const result = SaudiJobsDB.submitApplication(applicationData);
+            
+            if (result) {
+                localStorage.setItem('currentApplicationId', result.id);
+                window.location.href = 'payment.html';
+            } else {
+                showError('حدث خطأ في تقديم الطلب');
+            }
+        });
+        
+        function showError(msg) {
+            const div = document.getElementById('errorMsg');
+            div.textContent = msg;
+            div.style.display = 'block';
+            setTimeout(() => div.style.display = 'none', 3000);
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+        
+        updateNavbar();
+    </script>
+</body>
+</html>
