@@ -27,7 +27,7 @@ export default async function handler(req, res) {
             ...data,
             time: new Date().toISOString()
         }), {
-            access: 'public',
+            access: 'private',
             addRandomSuffix: false,
         });
         
