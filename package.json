@@ -1,8 +1,8 @@
 {
   "name": "saudi-jobs",
   "version": "1.0.0",
-  "description": "منصة توظيف السعودية - تخزين البيانات في Vercel Blob",
-  "main": "index.js",
+  "description": "منصة توظيف السعودية",
+  "type": "module",
   "scripts": {
     "dev": "vercel dev",
     "deploy": "vercel deploy --prod"
